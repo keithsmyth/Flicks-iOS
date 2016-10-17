@@ -10,13 +10,19 @@ import Foundation
 
 class MovieModel {
     
-    var title: String?
-    var description: String?
-    var posterSuffix: String?
+    private let baseUrl = "https://image.tmdb.org/t/p/"
+    private let thumbnailWidthUrl = "w92"
+    
+    let title: String?
+    let description: String?
+    let thumbnailUrl: String?
+    
+    private let posterSuffixOrNil: String?
     
     init(jsonItem: NSDictionary) {
         title = jsonItem.value(forKey: "title") as? String
         description = jsonItem.value(forKey: "overview") as? String
-        posterSuffix = jsonItem.value(forKey: "poster_path") as? String
+        posterSuffixOrNil = jsonItem.value(forKey: "poster_path") as? String
+        thumbnailUrl = posterSuffixOrNil != nil ? (baseUrl + thumbnailWidthUrl + posterSuffixOrNil!) : nil
     }
 }

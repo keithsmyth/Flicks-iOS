@@ -31,7 +31,11 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         let movie = movies[indexPath.row]
         cell.titleLabel.text = movie.title
         cell.descriptionLabel.text = movie.description
-        // TODO: image
+        if let thumbnailUrl = movie.thumbnailUrl {
+            cell.movieImageView.setImageWith(URL(string: thumbnailUrl)!)
+        } else {
+            cell.movieImageView.image = nil
+        }
         return cell
     }
     
