@@ -26,9 +26,16 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
             errorCallbackOrNil: nil)
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let movieDetailViewController = segue.destination as! MovieDetailViewController
+        let movieTableViewCell = sender as! MovieTableViewCell
+        movieDetailViewController.movie = movieTableViewCell.movie
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = moviesTableView.dequeueReusableCell(withIdentifier: "com.keithsmyth.MovieTableViewCell", for: indexPath) as! MovieTableViewCell
         let movie = movies[indexPath.row]
+        cell.movie = movie
         cell.titleLabel.text = movie.title
         cell.descriptionLabel.text = movie.description
         if let thumbnailUrl = movie.thumbnailUrl {
