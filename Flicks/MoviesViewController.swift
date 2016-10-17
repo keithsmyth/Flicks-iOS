@@ -19,7 +19,11 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         super.viewDidLoad()
         moviesTableView.dataSource = self
         moviesTableView.delegate = self
-        movies = movieProvider.getNowPlaying() // TODO: asynchronous
+        movieProvider.fetchNowPlaying(successCallback: { (movies) -> Void in
+                self.movies = movies
+                self.moviesTableView.reloadData()
+            },
+            errorCallbackOrNil: nil)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

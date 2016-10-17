@@ -10,13 +10,13 @@ import Foundation
 
 class MovieModel {
     
-    var title: String
-    var description: String
-    var posterSuffix: String
+    var title: String?
+    var description: String?
+    var posterSuffix: String?
     
-    init(title: String, description: String, posterSuffix: String) {
-        self.title = title
-        self.description = description
-        self.posterSuffix = posterSuffix
+    init(jsonItem: NSDictionary) {
+        title = jsonItem.value(forKey: "title") as? String
+        description = jsonItem.value(forKey: "overview") as? String
+        posterSuffix = jsonItem.value(forKey: "poster_path") as? String
     }
 }
