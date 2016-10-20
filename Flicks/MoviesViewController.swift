@@ -12,6 +12,7 @@ import SVProgressHUD
 class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var moviesTableView: UITableView!
+    @IBOutlet weak var alertLabel: UILabel!
     
     let movieProvider = MovieProvider()
     var movies = [MovieModel]()
@@ -21,12 +22,14 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         moviesTableView.dataSource = self
         moviesTableView.delegate = self
         showLoading(isLoading: true)
+        self.alertLabel.isHidden = true
         movieProvider.fetchNowPlaying(successCallback: { (movies) -> Void in
                 self.showLoading(isLoading: false)
                 self.movies = movies
                 self.moviesTableView.reloadData()
             },errorCallbackOrNil: { (error) -> Void in
                 self.showLoading(isLoading: false)
+                self.alertLabel.isHidden = false
             })
     }
     
@@ -60,7 +63,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         } else {
             SVProgressHUD.dismiss()
         }
-        moviesTableView.alpha = isLoading ? 0 : 1
+        moviesTableView.isHidden = isLoading
     }
 }
 
