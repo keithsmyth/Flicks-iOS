@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -19,11 +20,14 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         super.viewDidLoad()
         moviesTableView.dataSource = self
         moviesTableView.delegate = self
+        showLoading(isLoading: true)
         movieProvider.fetchNowPlaying(successCallback: { (movies) -> Void in
+                self.showLoading(isLoading: false)
                 self.movies = movies
                 self.moviesTableView.reloadData()
-            },
-            errorCallbackOrNil: nil)
+            },errorCallbackOrNil: { (error) -> Void in
+                self.showLoading(isLoading: false)
+            })
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -48,6 +52,15 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return movies.count
+    }
+    
+    func showLoading(isLoading: Bool) {
+        if isLoading {
+            SVProgressHUD.show()
+        } else {
+            SVProgressHUD.dismiss()
+        }
+        moviesTableView.alpha = isLoading ? 0 : 1
     }
 }
 
