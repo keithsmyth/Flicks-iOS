@@ -21,16 +21,10 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         super.viewDidLoad()
         moviesTableView.dataSource = self
         moviesTableView.delegate = self
-        showLoading(isLoading: true)
-        self.alertLabel.isHidden = true
-        movieProvider.fetchNowPlaying(successCallback: { (movies) -> Void in
-                self.showLoading(isLoading: false)
-                self.movies = movies
-                self.moviesTableView.reloadData()
-            },errorCallbackOrNil: { (error) -> Void in
-                self.showLoading(isLoading: false)
-                self.alertLabel.isHidden = false
-            })
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(fetchData(refreshControl:)), for: UIControlEvents.valueChanged)
+        moviesTableView.insertSubview(refreshControl, at: 0)
+        fetchData(refreshControl: refreshControl)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -55,6 +49,22 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return movies.count
+    }
+    
+    func fetchData(refreshControl: UIRefreshControl) {
+        showLoading(isLoading: true)
+        self.alertLabel.isHidden = true
+        movieProvider.fetchNowPlaying(successCallback: { (movies) -> Void in
+                self.showLoading(isLoading: false)
+                refreshControl.endRefreshing()
+                self.movies = movies
+                self.moviesTableView.reloadData()
+            },errorCallbackOrNil: { (error) -> Void in
+                self.showLoading(isLoading: false)
+                refreshControl.endRefreshing()
+                self.alertLabel.isHidden = false
+        })
+
     }
     
     func showLoading(isLoading: Bool) {
